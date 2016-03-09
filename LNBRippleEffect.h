@@ -37,14 +37,14 @@
    UIColor *bordercolor;
     UIColor *rippleTrailColor;
     NSArray *rippleColors;
-    
+    float radius;
+    float duration;
 }
 typedef void (^onFinish)(BOOL success);
 @property (nonatomic, copy) onFinish block;
--(instancetype)initWithImage:(UIImage *)image Frame:(CGRect)frame Color:(UIColor*)bordercolor Target:(SEL)action ID:(id)sender;
+-(instancetype)initWithImage:(UIImage *)image Frame:(CGRect)frame Color:(UIColor*)bordercolor Target:(SEL)action ID:(id)sender withRadius:(float)radiusVal duration:(float)durationVal;
 -(instancetype)initWithImage:(UIImage *)image Frame:(CGRect)frame didEnd:(onFinish)executeOnFinish;
 -(void)setRippleColor:(UIColor *)color;
 -(void)setRippleTrailColor:(UIColor *)color;
 
 @end
-

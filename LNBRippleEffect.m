@@ -38,7 +38,7 @@
     return self;
 }
 
--(void)drawImageWithFrame:(UIImage *)image Frame:(CGRect)frame Color:(UIColor*)bordercolor{
+-(void)drawImageWithFrame:(UIImage *)image Frame:(CGRect)frame Color:(UIColor*)bordercolorVal{
     
     buttonImage = [[UIImageView alloc]initWithImage:image];
     buttonImage.frame = CGRectMake(0, 0, frame.size.width-5, frame.size.height-5);
@@ -51,26 +51,30 @@
     buttonImage.center = CGPointMake(self.frame.size.width/2, self.frame.size.height/2);
     self.layer.cornerRadius = self.frame.size.height/2;
     self.layer.borderWidth = 5;
-    self.layer.borderColor = bordercolor.CGColor;
+    self.layer.borderColor = bordercolorVal.CGColor;
     
     tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(buttonTapped:)];
     [self addGestureRecognizer:tapGesture];
-    [NSTimer scheduledTimerWithTimeInterval:1.2 target:self selector:@selector(continuoousripples) userInfo:nil repeats:YES];
+    [NSTimer scheduledTimerWithTimeInterval:.7 target:self selector:@selector(continuoousripples) userInfo:nil repeats:YES];
     
 }
 
 
 -(instancetype)initWithImage:(UIImage *)image
                     Frame:(CGRect)frame
-                    Color:(UIColor*)bordercolor
+                    Color:(UIColor*)bordercolorVal
                    Target:(SEL)action
-                       ID:(id)sender {
+                       ID:(id)sender
+                  withRadius:(float)radiusVal
+                    duration:(float)durationVal{
     self = [super initWithFrame:frame];
     
     if(self){
-        [self drawImageWithFrame:image Frame:frame Color:bordercolor];
+        [self drawImageWithFrame:image Frame:frame Color:bordercolorVal];
         selectedMethod = action;
         senderid = sender;
+        radius = radiusVal;
+        duration = durationVal;
     }
     
     return self;
@@ -116,7 +120,7 @@
         
         CABasicAnimation *scaleAnimation = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
         scaleAnimation.fromValue = [NSValue valueWithCATransform3D:CATransform3DIdentity];
-        scaleAnimation.toValue = [NSValue valueWithCATransform3D:CATransform3DMakeScale(2.5, 2.5, 1)];
+        scaleAnimation.toValue = [NSValue valueWithCATransform3D:CATransform3DMakeScale(radius, radius, 1)];
         
         CABasicAnimation *alphaAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
         alphaAnimation.fromValue = @1;
@@ -124,10 +128,13 @@
         
         CAAnimationGroup *animation = [CAAnimationGroup animation];
         animation.animations = @[scaleAnimation, alphaAnimation];
-        animation.duration = 2.0f;
+        animation.duration = duration;
         animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
         [circleShape addAnimation:animation forKey:nil];
-    
+    if([senderid respondsToSelector:selectedMethod]){
+        [senderid performSelectorOnMainThread:selectedMethod withObject:nil waitUntilDone:NO];
+    }
+
     
     [UIView animateWithDuration:1.1 animations:^{
         buttonImage.alpha = 0.4;
@@ -137,10 +144,6 @@
             buttonImage.alpha = 1;
             self.layer.borderColor = rippleColor.CGColor;
         }completion:^(BOOL finished) {
-            if([senderid respondsToSelector:selectedMethod]){
-                [senderid performSelectorOnMainThread:selectedMethod withObject:nil waitUntilDone:NO];
-            }
-            
             if(_block) {
                 BOOL success= YES;
                 _block(success);
@@ -170,7 +173,7 @@
     
     CABasicAnimation *scaleAnimation = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
     scaleAnimation.fromValue = [NSValue valueWithCATransform3D:CATransform3DIdentity];
-    scaleAnimation.toValue = [NSValue valueWithCATransform3D:CATransform3DMakeScale(2.5, 2.5, 1)];
+    scaleAnimation.toValue = [NSValue valueWithCATransform3D:CATransform3DMakeScale(radius, radius, 1)];
     
     CABasicAnimation *alphaAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
     alphaAnimation.fromValue = @1;
@@ -178,7 +181,7 @@
     
     CAAnimationGroup *animation = [CAAnimationGroup animation];
     animation.animations = @[scaleAnimation, alphaAnimation];
-    animation.duration = 2.0f;
+    animation.duration = duration;
     animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
     [circleShape addAnimation:animation forKey:nil];
 }

@@ -1,6 +1,8 @@
 LNBRippleEffect
 ===============
 
+Podspec added
+
 Create a Tinder-like button with ripple animation.
 
 <IMG SRC="https://github.com/lnbharath/LNBRippleEffect/blob/0.1.0/Demo/LNBRippleEffect.gif">

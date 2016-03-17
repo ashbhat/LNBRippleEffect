@@ -1,5 +1,5 @@
 Pod::Spec.new do |s|
-  s.name         = "LNBRippleEffect.podspec"
+  s.name         = "LNBRippleEffect"
   s.version      = "0.1.0"
   s.summary      = "Create a Tinder-like button with ripple animation."
   s.homepage     = "https://github.com/lnbharath/LNBRippleEffect.git"
